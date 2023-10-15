@@ -1,15 +1,51 @@
-export class ProductModel {
-  _id: string;
+import { prop } from '@typegoose/typegoose';
+import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
+
+class ProductCharacteristics {
+  @prop()
+  name: string;
+
+  @prop()
+  value: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+export interface ProductModel extends Base {}
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+export class ProductModel extends TimeStamps {
+  @prop()
   image: string;
+
+  @prop()
   title: string;
+
+  @prop()
   price: number;
+
+  @prop()
   oldPrice: number;
+
+  @prop()
   credit: number;
+
+  @prop()
   calculatedRating: string;
+
+  @prop()
   description: string;
+
+  @prop()
   advantages: string;
+
+  @prop()
   disAdvantages: string;
+
+  @prop({ type: () => [String] })
   categories: string[];
-  tags: string;
-  characteristics: { [key: string]: string };
+
+  @prop({ type: () => [String] })
+  tags: string[];
+
+  @prop({ type: () => [ProductCharacteristics], _id: false })
+  characteristics: ProductCharacteristics;
 }

@@ -1,7 +1,18 @@
 import { Module } from '@nestjs/common';
 import { SparkPagesController } from './spark-pages.controller';
+import { TypegooseModule } from '@m8a/nestjs-typegoose';
 
 @Module({
-  controllers: [SparkPagesController]
+  controllers: [SparkPagesController],
+  imports: [
+    TypegooseModule.forFeature([
+      {
+        typegooseClass: SparkPagesModule,
+        schemaOptions: {
+          collection: 'SparkPage',
+        },
+      },
+    ]),
+  ],
 })
 export class SparkPagesModule {}
