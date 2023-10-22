@@ -14,11 +14,12 @@ import {
 import { ProductModel } from './product.model';
 import { FindProductDto } from './dto/find-product-dto';
 import { CreateProductDto } from './dto/create-product-dto';
-import { ProductsService } from './products.service';
 import {
   PRODUCT_NOT_FOUND_ERROR,
   PRODUCT_SECCESSFULLY_DELETED,
 } from './product.constants';
+import { ProductsService } from './products.service';
+import { IdValidationPipe } from 'src/pipes/id-validation.pipe';
 
 @Controller('products')
 export class ProductsController {
@@ -30,7 +31,7 @@ export class ProductsController {
   }
 
   @Get(':id')
-  async get(@Param('id') id: string) {
+  async get(@Param('id', IdValidationPipe) id: string) {
     const product = await this.productService.findProductById(id);
 
     if (!product) {
@@ -41,7 +42,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', IdValidationPipe) id: string) {
     const deletedProduct = await this.productService.deleteProductById(id);
 
     if (!deletedProduct) {
@@ -52,7 +53,10 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  async patch(@Param('id') id: string, @Body() dto: ProductModel) {
+  async patch(
+    @Param('id', IdValidationPipe) id: string,
+    @Body() dto: ProductModel,
+  ) {
     const updatedProduct = await this.productService.updateProductById(id, dto);
 
     if (!updatedProduct) {

@@ -30,7 +30,7 @@ export class ProductsService {
   }
 
   async findProductWithReviews(dto: FindProductDto) {
-    return this.productModel
+    return (await this.productModel
       .aggregate([
         {
           $match: {
@@ -41,7 +41,7 @@ export class ProductsService {
         { $limit: dto.limit },
         {
           $lookup: {
-            from: 'Review',
+            from: 'Reviews',
             localField: '_id',
             foreignField: 'productId',
             as: 'reviews',
@@ -51,9 +51,25 @@ export class ProductsService {
           $addFields: {
             reviewCount: { $size: '$reviews' },
             reviewAvg: { $avg: '$reviews.rating' },
+            reviews: {
+              $function: {
+                body: `function (reviews) {
+                  reviews.sort(
+                    (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+                  );
+                  return reviews;
+                }`,
+                args: ['$reviews'],
+                lang: 'js',
+              },
+            },
           },
         },
       ])
-      .exec();
+      .exec()) as (ProductModel & {
+      review: ReviewsModel[];
+      reviewCount: number;
+      reviewAvg: number;
+    })[];
   }
 }
