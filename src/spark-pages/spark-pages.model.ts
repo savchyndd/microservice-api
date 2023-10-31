@@ -1,4 +1,4 @@
-import { prop } from '@typegoose/typegoose';
+import { index, prop } from '@typegoose/typegoose';
 import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 
 export enum ESparkMainCategory {
@@ -32,6 +32,7 @@ class AdvantageData {
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface SparkPagesModel extends Base {}
+@index({ '$**': 'text' })
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class SparkPagesModel extends TimeStamps {
   @prop({
